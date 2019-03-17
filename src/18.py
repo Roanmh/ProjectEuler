@@ -21,6 +21,8 @@ data_raw = """75
 
 
 class TriNode:
+    comparison_count = 0
+
     def __init__(self, weight, child_left, child_right, path_weight_left=None, path_weight_right=None):
 		self.weight = int(weight)
 		self.child_left = child_left
@@ -33,11 +35,12 @@ class TriNode:
         left = self.path_weight_left if self.path_weight_left else 0
         right = self.path_weight_right if self.path_weight_right else 0
 
+        TriNode.comparison_count += 1
         return max(left, right)
 
 
 def parse_raw(data_raw):
-    return [x.split(" ") for x in data_raw.split("\n")]
+    return [row for row in (x.split(" ") for x in data_raw.split("\n")) if row != ['']]
 
 
 def init_graph(data_raw):
@@ -83,14 +86,21 @@ def recursive_print(root_node, level=0):
 
 def main(test_values=False):
     from sys import argv
-    if argv[0] == "test" or test_values:
+    if argv[1] == "-t" or test_values:
         nodes_by_row = init_graph(test_data_raw)
+    elif argv[1] == "-f":
+        with open(argv[2]) as f:
+            file_data_raw = f.read()
+            nodes_by_row = init_graph(file_data_raw)
     else:
         nodes_by_row = init_graph(data_raw)
 
     calculate_path_weights(nodes_by_row)
 
     print("Largest Path At Base of Triangle: ", triangle_largest_path(nodes_by_row))
+
+    if "-c" in argv:
+        print("Comparison Count: ", TriNode.comparison_count)
 
 
 if __name__ == '__main__':
