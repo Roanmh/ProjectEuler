@@ -1,3 +1,6 @@
+from util import parse_spc_delim_2d
+
+
 test_data_raw = """3
 7 4
 2 4 6
@@ -39,12 +42,8 @@ class TriNode:
         return max(left, right)
 
 
-def parse_raw(data_raw):
-    return [row for row in (x.split(" ") for x in data_raw.split("\n")) if row != ['']]
-
-
 def init_graph(data_raw):
-    triangle_weights = parse_raw(data_raw)
+    triangle_weights = parse_spc_delim_2d(data_raw)
 
     nodes_by_row = []
     row_last = []
@@ -76,26 +75,20 @@ def triangle_largest_path(nodes_by_row):
     return max((n.largest_path + n.weight for n in nodes_by_row[-1]))
 
 
-def recursive_print(root_node, level=0):
-    print("\t" * level, root_node.weight)
-    if root_node.child_left is not None:
-        recursive_print(root_node.child_left, level + 1)
-    if root_node.child_left is not None:
-        recursive_print(root_node.child_right, level + 1)
-
-
 def main(test_values=False):
     from sys import argv
-    if argv[1] == "-t" or test_values:
+    if ("-t" in argv) or test_values:
         nodes_by_row = init_graph(test_data_raw)
-    elif argv[1] == "-f":
-        with open(argv[2]) as f:
-            file_data_raw = f.read()
-            nodes_by_row = init_graph(file_data_raw)
     else:
-        nodes_by_row = init_graph(data_raw)
+        try:
+            arg_index = argv.index('-f') + 1
+            with open(argv[arg_index]) as f:
+                file_data_raw = f.read()
+                nodes_by_row = init_graph(file_data_raw)
+        except ValueError:
+            nodes_by_row = init_graph(data_raw)
 
-    calculate_path_weights(nodes_by_row)
+        calculate_path_weights(nodes_by_row)
 
     print("Largest Path At Base of Triangle: ", triangle_largest_path(nodes_by_row))
 

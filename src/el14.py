@@ -6,8 +6,6 @@ from enum import Enum
 from time import time
 from sys import getsizeof
 
-from util import collatz_length
-
 N = 1000000
 
 
@@ -34,6 +32,19 @@ class CollatzLengthEfficient:
 
     def __call__(self, *args, **kwargs):
         return self.length(*args)
+
+
+def collatz_length(n):
+    seq = [n]
+    count = 0
+    while n != 1:
+        if n % 2:
+            n = 3 * n + 1
+        else:
+            n /= 2
+        count += 1
+        seq.append(n)
+    return count, seq
 
 
 # Brute Force Method
@@ -85,8 +96,4 @@ def performance_test():
 
 # Run with each with n
 if __name__ == "__main__":
-    from sys import argv
-    if '-t' in argv:
-        performance_test()
-    else:
-        print(main(6))
+    performance_test()
