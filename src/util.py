@@ -28,3 +28,10 @@ def recursive_print(root_node, level=0):
         recursive_print(root_node.child_left, level + 1)
     if root_node.child_left is not None:
         recursive_print(root_node.child_right, level + 1)
+
+# 20: Factorial digit sum
+def digits(num):
+    '''Return generator which iterates over decimal digits of num'''
+    while (num > 0):
+        yield num % 10
+        num = num // 10
